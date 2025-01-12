@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import "./App.css";
-import RequestHandlerImpl  from "./services/RequestHandler.ts";
+import RequestHandlerImpl from "./services/RequestHandler.ts";
 import LoginPage from "./screens/login/login_screen.tsx";
 import RegisterPage from "./screens/registration/register_screen.tsx";
-
+import { HomeScreen } from "./screens/home/home_page.tsx";  // Import the HomeScreen component
 
 function App() {
   const [loading, setLoading] = useState(true);
@@ -46,6 +46,7 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
+          {/* Redirect to HomeScreen or Login based on authentication */}
           <Route
             path="/"
             element={
@@ -56,6 +57,7 @@ function App() {
               )
             }
           />
+          {/* Login Page */}
           <Route
             path="/login"
             element={
@@ -66,12 +68,11 @@ function App() {
                 }}
                 onNavigateToRegister={() => {
                   console.log("Navigate to registration screen");
-                  // Handle navigation to a registration screen if needed
-                  
                 }}
               />
             }
           />
+          {/* Register Page */}
           <Route
             path="/register"
             element={
@@ -81,11 +82,24 @@ function App() {
                   setIsAuthenticated(true);
                 }}
                 onNavigateToLogin={() => {
-                  console.log("Navigate to registration screen");
-                  // Handle navigation to a registration screen if needed
-                 
+                  console.log("Navigate to login screen");
                 }}
               />
+            }
+          />
+          {/* Home Screen - Only accessible for authenticated users */}
+          <Route
+            path="/home/:userUid"
+            element={
+              isAuthenticated ? (
+                <HomeScreen
+                  onGoToAccountPage={() => {
+                    console.log("Navigate to account page");
+                  }}
+                />
+              ) : (
+                <Navigate to="/login" replace />
+              )
             }
           />
         </Routes>
